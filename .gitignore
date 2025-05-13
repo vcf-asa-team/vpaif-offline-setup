@@ -1,0 +1,6 @@
+supervisor-services-tar/*
+supervisor-services-yml/*
+tanzu-common-files-bin/*
+get_helm.sh
+kubectl
+
