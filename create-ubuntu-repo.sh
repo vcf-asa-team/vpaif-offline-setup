@@ -60,7 +60,7 @@ for p in "${1:-jammy}"{,-{security,updates,backports}}/{main,restricted,universe
 done
 # Copy the downloaded files to the appropriate location
 
-sudo cp -av archive.ubuntu.com/ubuntu/ $REPO_LOCATION/mirror/archive.ubuntu.com/ubuntu
+sudo cp -av archive.ubuntu.com/ubuntu/ $BASTION_RESOURCES_DIR/ubuntu/mirror/archive.ubuntu.com/ubuntu
 
 #copy to http server in AG
-sshpass -p "$HTTP_PASSWORD" scp -r $REPO_LOCATION/mirror/archive.ubuntu.com/ubuntu $HTTP_USERNAME@$HTTP_HOST:/data/debs/.
+sshpass -p "$HTTP_PASSWORD" scp -r $BASTION_RESOURCES_DIR/ubuntu/mirror/archive.ubuntu.com/ubuntu $HTTP_USERNAME@$HTTP_HOST:$REPO_LOCATION/debs/.
