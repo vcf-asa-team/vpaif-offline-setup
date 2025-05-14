@@ -6,6 +6,10 @@ mapfile -t helm_charts < <(jq -r '.helm[]' './config/images.json')
 mapfile -t llm < <(jq -c '.models.llm[]' './config/images.json')
 mapfile -t embedding < <(jq -c '.models.embedding[]' './config/images.json')
 
+sudo jq ". += {\"insecure-registries\":[\"${BOOTSTRAP_REGISTRY}\"]}" /etc/docker/daemon.json > /tmp/temp.json && sudo mv /tmp/temp.json /etc/docker/daemon.json
+sudo systemctl restart docker
+
+
 docker login ${BOOTSTRAP_REGISTRY} -u "$BOOTSTRAP_REGISTRY_USERNAME" -p "$BOOTSTRAP_REGISTRY_PASSWORD"
 docker login nvcr.io -u '$oauthtoken' -p "$NGC_API_KEY"
 

@@ -100,7 +100,9 @@ for file in "$DOWNLOAD_DIR_YML"/*.yaml; do
 done
 
 #copy tar/yaml to admin host
-sshpass -p "$HTTP_PASSWORD" scp -o StrictHostKeyChecking=no -r {supervisor-services*,tanzu-common-files-bin} $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
+if [[ $SYNC_DIRECTORIES == "True" ]]; then
+    sshpass -p "$HTTP_PASSWORD" rsync -avz {supervisor-services*,tanzu-common-files-bin} $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
 
-#copy yq to admin host
-sshpass -p "$HTTP_PASSWORD" scp -o StrictHostKeyChecking=no /usr/bin/yq $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
+    #copy yq to admin host
+    sshpass -p "$HTTP_PASSWORD" rsync -avz /usr/bin/yq $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
+fi

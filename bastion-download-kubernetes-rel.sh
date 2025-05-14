@@ -52,7 +52,9 @@ mv common-container-nv-vgpu-ubuntu-2204-v20240814.tar.gz "${DOWNLOAD_DLVM_OVA}"
 rm -rf common-container-nv-vgpu-ubuntu-2204-v20240814*
 
 # copy tar/yaml to admin host
-sshpass -p "$HTTP_PASSWORD" scp -o StrictHostKeyChecking=no -r {kubernetes-releases-ova,dlvm-releases-ova} $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
+if [[ $SYNC_DIRECTORIES == "True" ]]; then
+  sshpass -p "$HTTP_PASSWORD" rsync -avz {kubernetes-releases-ova,dlvm-releases-ova} $HTTP_USERNAME@$HTTP_HOST:$ADMIN_RESOURCES_DIR
+fi
 
 # echo "Copy the file ${tkgrimage}.tar.gz to the offline admin machine that has access to the vSphere environment."
 # echo "You can untar the file and upload the OVA files to a Content Library called Local..."

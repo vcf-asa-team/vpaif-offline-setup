@@ -20,7 +20,7 @@ cat > /etc/apt/mirror.list << EOF
 # set defaultarch  <running host architecture>
 # set postmirror_script $var_path/postmirror.sh
 # set run_postmirror 0
-set base_path $REPO_LOCATION
+set base_path $BASTION_REPO_DIR
 set nthreads     20
 set _tilde 0
 #
@@ -38,7 +38,7 @@ apt-mirror
 
 # fix errors
 # Set the base directory
-base_dir="$REPO_LOCATION/mirror/archive.ubuntu.com/ubuntu/dists"
+base_dir="$BASTION_REPO_DIR/mirror/archive.ubuntu.com/ubuntu/dists"
 # Change to the base directory
 cd $base_dir
 # Download dep11 icons
@@ -60,7 +60,9 @@ for p in "${1:-jammy}"{,-{security,updates,backports}}/{main,restricted,universe
 done
 # Copy the downloaded files to the appropriate location
 
-sudo cp -av archive.ubuntu.com/ubuntu/ $BASTION_RESOURCES_DIR/ubuntu/mirror/archive.ubuntu.com/ubuntu
+cp -av archive.ubuntu.com/ubuntu/ $BASTION_REPO_DIR/mirror/archive.ubuntu.com/ubuntu
 
 #copy to http server in AG
-sshpass -p "$HTTP_PASSWORD" scp -r $BASTION_RESOURCES_DIR/ubuntu/mirror/archive.ubuntu.com/ubuntu $HTTP_USERNAME@$HTTP_HOST:$REPO_LOCATION/debs/.
+if [[ $SYNC_DIRECTORIES == "True" ]]; then
+  sshpass -p "$HTTP_PASSWORD" rsync -avz $BASTION_REPO_DIR/mirror/archive.ubuntu.com/ubuntu $HTTP_USERNAME@$HTTP_HOST:$REPO_LOCATION/debs
+fi
