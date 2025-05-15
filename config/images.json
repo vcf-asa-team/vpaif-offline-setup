@@ -56,7 +56,7 @@
 		"embedding":[
 			{
 				"name":"nv-embedqa-e5-v5",
-				"uri":"nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest",
+				"uri":"nvcr.io/nim/nvidia/nv-embedqa-e5-v5-pb24h2:1.2.3",
 				"profiles":[
 					{
 						"profile_name":"onnx-fp16",
