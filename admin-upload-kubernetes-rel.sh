@@ -30,8 +30,12 @@ export GOVC_RESOURCE_POOL=
 ############################ WIP
 
 # upload to content library VKS
-
-if ! govc library.ls $CL_VKS > /dev/null 2>&1 ; then 
+results=$(govc library.ls $CL_VKS)
+if [ $results > /dev/null 2>&1 ]; then
+  echo "Library '$CL_VKS' already exists."
+else
+  # If the library does not exist, create it
+  echo "Library '$CL_VKS' does not exist. Creating it..."
   govc library.create $CL_VKS
 fi
 
@@ -41,7 +45,11 @@ pushd . > /dev/null
 cd $DOWNLOAD_VKR_OVA
 FILE_WITH_EXTENSION=$(ls *.tar.gz)
 FILENAME=${FILE_WITH_EXTENSION%.tar.gz}
+echo $FILENAME
+echo $FILE_WITH_EXTENSION
 tar xvf $FILE_WITH_EXTENSION --transform 's|.*/||'
+mv ubuntu-ova.ovf $FILENAME.ovf
+rm ubuntu-ova.mf
 echo "Importing OVF"
 govc library.import $CL_VKS $FILENAME.ovf
 echo "Cleaning up"
@@ -51,14 +59,20 @@ find . -type f | grep -v "$FILE_WITH_EXTENSION" | xargs rm -fr
 popd > /dev/null
 
 # upload to content library DLVM
-govc library.ls
-
-govc library.create $CL_DLVM
+results=$(govc library.ls $CL_DLVM)
+echo $results
+if [ $results > /dev/null 2>&1 ]; then
+  echo "Library '$CL_DLVM' already exists."
+else
+  # If the library does not exist, create it
+  echo "Library '$CL_DLVM' does not exist. Creating it..."
+  govc library.create $CL_DLVM
+fi
 
 # Save original directory
 pushd . > /dev/null
 
-cd ../$DOWNLOAD_DLVM_OVA
+cd $DOWNLOAD_DLVM_OVA
 FILE_WITH_EXTENSION=$(ls *.tar.gz)
 FILENAME=${FILE_WITH_EXTENSION%.tar.gz}
 tar xvf $FILE_WITH_EXTENSION --transform 's|.*/||'
