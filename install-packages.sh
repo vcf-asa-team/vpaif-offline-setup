@@ -20,8 +20,19 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add the Tanzu repository
+curl -fsSL \
+  https://storage.googleapis.com/tanzu-cli-installer-packages/keys/TANZU-PACKAGING-GPG-RSA-KEY.gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/tanzu-archive-keyring.gpg
+echo \
+  "deb [signed-by=/etc/apt/keyrings/tanzu-archive-keyring.gpg] \
+  https://storage.googleapis.com/tanzu-cli-installer-packages/apt \
+  tanzu-cli-jessie main" | sudo tee /etc/apt/sources.list.d/tanzu.list
 sudo apt-get update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Install Tanzu CLI
+sudo apt install -y tanzu-cli
 
 # Install yq
 sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && \
